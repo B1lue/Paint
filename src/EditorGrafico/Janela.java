@@ -1,19 +1,15 @@
 package EditorGrafico;
 
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.IOException;
-import java.io.Serial;
-import java.util.Objects;
-import java.util.Vector;
+import Figuras.*;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
-
-import Figuras.Figura;
-import Figuras.Linha;
-import Figuras.Ponto;
-import Figuras.Texto;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import java.util.Objects;
+import java.util.Vector;
 
 public class Janela extends JFrame implements MouseListener, MouseMotionListener {
     @Serial
@@ -34,12 +30,15 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
     protected JLabel statusBar1 = new JLabel("Mensagem:"),
             statusBar2 = new JLabel("Coordenada:");
 
-    protected boolean esperaPonto, esperaInicioReta, esperaFimReta;
+    protected boolean esperaPonto, esperaInicioReta, esperaFimReta, esperaCirculo, esperaInicioCirculo, esperaFimCirculo, esperarElipse, esperarFimElipse, esperarInicioElipse;
 
     protected Color corAtual = Color.BLACK;
     protected Ponto p1;
+    protected Circulo circulo1;
 
-    protected Vector<Figura> figuras = new Vector<Figura>();
+    protected Elipse elipse1;
+
+    protected static Vector<Figura> figuras = new Vector<Figura>();
 
     protected JButton btnTexto = new JButton("Texto");
     protected boolean esperaTexto;
@@ -50,8 +49,9 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
 
 
         try {
-            Image btnPontoImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("ponto.jpg")));
+            Image btnPontoImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("../imagens/ponto.jpg")));
             btnPonto.setIcon(new ImageIcon(btnPontoImg));
+
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,
                     "Arquivo ponto.jpg n�o foi encontrado",
@@ -60,7 +60,7 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
         }
 
         try {
-            Image btnLinhaImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("linha.jpg")));
+            Image btnLinhaImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("../imagens/linha.jpg")));
             btnLinha.setIcon(new ImageIcon(btnLinhaImg));
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,
@@ -70,7 +70,7 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
         }
 
         try {
-            Image btnCirculoImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("circulo.jpg")));
+            Image btnCirculoImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("../imagens/circulo.jpg")));
             btnCirculo.setIcon(new ImageIcon(btnCirculoImg));
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,
@@ -80,7 +80,7 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
         }
 
         try {
-            Image btnElipseImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("elipse.jpg")));
+            Image btnElipseImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("../imagens/elipse.jpg")));
             btnElipse.setIcon(new ImageIcon(btnElipseImg));
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,
@@ -90,7 +90,7 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
         }
 
         try {
-            Image btnCoresImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("cores.jpg")));
+            Image btnCoresImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("../imagens/cores.jpg")));
             btnCores.setIcon(new ImageIcon(btnCoresImg));
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,
@@ -100,7 +100,7 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
         }
 
         try {
-            Image btnAbrirImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("abrir.jpg")));
+            Image btnAbrirImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("../imagens/abrir.jpg")));
             btnAbrir.setIcon(new ImageIcon(btnAbrirImg));
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,
@@ -110,7 +110,7 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
         }
 
         try {
-            Image btnSalvarImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("salvar.jpg")));
+            Image btnSalvarImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("../imagens/salvar.jpg")));
             btnSalvar.setIcon(new ImageIcon(btnSalvarImg));
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,
@@ -120,7 +120,7 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
         }
 
         try {
-            Image btnApagarImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("apagar.jpg")));
+            Image btnApagarImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("../imagens/apagar.jpg")));
             btnApagar.setIcon(new ImageIcon(btnApagarImg));
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,
@@ -130,7 +130,7 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
         }
 
         try {
-            Image btnSairImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("sair.jpg")));
+            Image btnSairImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("../imagens/sair.jpg")));
             btnSair.setIcon(new ImageIcon(btnSairImg));
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,
@@ -141,11 +141,13 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
 
         btnPonto.addActionListener(new DesenhoDePonto());
         btnLinha.addActionListener(new DesenhoDeReta());
+        btnCirculo.addActionListener(new DesenhoCirculo());
+        btnTexto.addActionListener(new DesenhoDeTexto());
+        btnElipse.addActionListener(new DesenhoDeElipse());
 
         JPanel pnlBotoes = new JPanel();
         FlowLayout flwBotoes = new FlowLayout();
         pnlBotoes.setLayout(flwBotoes);
-        btnTexto.addActionListener(new DesenhoDeTexto());
 
         pnlBotoes.add(btnTexto);
         pnlBotoes.add(btnAbrir);
@@ -216,9 +218,46 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
                 figuras.get(figuras.size() - 1).torneSeVisivel(pnlDesenho.getGraphics());
                 statusBar1.setText("Mensagem:");
             }
+            if (esperaCirculo) {
+                figuras.add(new Circulo(circulo1.getCentro().getX(), circulo1.getCentro().getY(),
+                        (int) Math.sqrt(Math.pow(e.getX() - circulo1.getCentro().getX(), 2) + Math.pow(e.getY() - circulo1.getCentro().getY(), 2)), corAtual));
+                figuras.get(figuras.size() - 1).torneSeVisivel(pnlDesenho.getGraphics());
+                esperaCirculo = false;
+            } else if (esperaInicioCirculo) {
+                circulo1 = new Circulo(e.getX(), e.getY(), 0, corAtual);
+                esperaInicioCirculo = false;
+                esperaFimCirculo = true;
+                statusBar1.setText("Mensagem: clique o ponto final do círculo");
+            } else if (esperaFimCirculo) {
+                esperaInicioCirculo = false;
+                esperaFimCirculo = false;
+
+                figuras.add(new Circulo(circulo1.getCentro().getX(), circulo1.getCentro().getY(),
+                        (int) Math.sqrt(Math.pow(e.getX() - circulo1.getCentro().getX(), 2) + Math.pow(e.getY() - circulo1.getCentro().getY(), 2)), corAtual));
+                figuras.get(figuras.size() - 1).torneSeVisivel(pnlDesenho.getGraphics());
+                statusBar1.setText("Mensagem: foi se o circulo");
+            }
+            else if (esperaTexto) {
+                figuras.add(new Texto(e.getX(), e.getY(), textoDigitado, corAtual));
+                figuras.get(figuras.size() - 1).torneSeVisivel(pnlDesenho.getGraphics());
+                esperaTexto = false;
+                statusBar1.setText("Mensagem:");
+            }    if (esperarInicioElipse) {
+                elipse1 = new Elipse(e.getX(), e.getY(), 0, 0, corAtual);
+                esperarInicioElipse = false;
+                esperarFimElipse = true;
+            }
         }
 
         public void mouseReleased(MouseEvent e) {
+            if (esperarFimElipse) {
+                figuras.add(new Elipse(elipse1.getCentro().getX(), elipse1.getCentro().getY(),
+                        Math.abs(e.getX() - elipse1.getCentro().getX()),
+                        Math.abs(e.getY() - elipse1.getCentro().getY()), corAtual));
+                figuras.lastElement().torneSeVisivel(pnlDesenho.getGraphics());
+                esperarFimElipse = false;
+                statusBar1.setText("Mensagem:");
+            }
         }
 
         public void mouseClicked(MouseEvent e) {
@@ -259,14 +298,54 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
         }
     }
 
+    protected class DesenhoCirculo implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            // Quando o botão de círculo é clicado, definimos as variáveis de estado apropriadas
+            esperaPonto = false;
+            esperaInicioReta = false;
+            esperaFimReta = false; // Não é necessário, mas é bom para a clareza
+            esperaInicioCirculo = true;
+
+            statusBar1.setText("Mensagem: clique o centro do círculo");
+        }
+    }
+
+    protected  class DesenhoDeElipse implements ActionListener{
+        public void actionPerformed(ActionEvent e){
+            esperaPonto = false;
+            esperaInicioReta = false;
+            esperaFimReta = false;
+            esperarInicioElipse = true;
+
+            statusBar1.setText("Mensagem: clique o centro da elipse");
+        }
+    }
+
     protected static class FechamentoDeJanela extends WindowAdapter {
         public void windowClosing(WindowEvent e) {
             System.exit(0);
         }
     }
 
-
-    // ...
+    protected  static class SalvarArquivo implements ActionListener{
+        public void actionPerformed(ActionEvent e){
+            JFileChooser fc = new JFileChooser();
+            int res = fc.showSaveDialog(null);
+            if (res == JFileChooser.APPROVE_OPTION) {
+                File arquivo = fc.getSelectedFile();
+                try {
+                    ObjectOutputStream gravador = new ObjectOutputStream(new FileOutputStream(arquivo));
+                    gravador.writeObject(figuras);
+                    gravador.close();
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null,
+                            "Erro ao salvar arquivo: " + ex.getMessage(),
+                            "Erro",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }
 
     @Override
     public void mouseReleased(MouseEvent e) {
@@ -276,6 +355,22 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
             figuras.lastElement().torneSeVisivel(pnlDesenho.getGraphics());
             esperaFimReta = false;
             statusBar1.setText("Mensagem:");
+        }
+
+        if (esperaCirculo) {
+            figuras.add(new Circulo(circulo1.getCentro().getX(), circulo1.getCentro().getY(),
+                    (int) Math.sqrt(Math.pow(e.getX() - circulo1.getCentro().getX(), 2) + Math.pow(e.getY() - circulo1.getCentro().getY(), 2)), corAtual));
+            figuras.lastElement().torneSeVisivel(pnlDesenho.getGraphics());
+            esperaFimCirculo = false;
+            statusBar1.setText("ola mundo ");
+        }
+        if(esperarElipse){
+            figuras.add(new Elipse(elipse1.getCentro().getX(), elipse1.getCentro().getY(),
+                    (int) Math.sqrt(Math.pow(e.getX() - elipse1.getCentro().getX(), 2) + Math.pow(e.getY() - elipse1.getCentro().getY(), 2)),
+                    (int) Math.sqrt(Math.pow(e.getX() - elipse1.getCentro().getX(), 2) + Math.pow(e.getY() - elipse1.getCentro().getY(), 2)), corAtual));
+            figuras.lastElement().torneSeVisivel(pnlDesenho.getGraphics());
+            esperaFimCirculo = false;
+            statusBar1.setText("Meu cu ");
         }
     }
 
@@ -304,6 +399,17 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
             esperaFimReta = true;
             statusBar1.setText("Mensagem: clique o ponto final da reta");
         }
+
+        if (esperaInicioCirculo) {
+            circulo1 = new Circulo(e.getX(), e.getY(), 0, corAtual);
+            esperaInicioCirculo = false;
+            esperaFimCirculo = true;
+        }
+        if (esperarInicioElipse){
+            elipse1 = new Elipse(e.getX(), e.getY(), 0, 0, corAtual);
+            esperarInicioElipse = false;
+            esperarFimElipse = true;
+        }
     }
 
     @Override
@@ -311,6 +417,11 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
         // Este método é chamado quando o mouse entra na área do componente
         if (esperaFimReta) {
             statusBar1.setText("Mensagem: clique o ponto final da reta");
+        } else if (esperaFimCirculo) {
+            statusBar1.setText("Mensagem: clique o ponto final do circulo");
+        } else if (esperarFimElipse) {
+            statusBar1.setText("Mensagem: clique o ponto final da elipse");
+
         }
     }
 
@@ -325,7 +436,19 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
     @Override
     public void mouseDragged(MouseEvent e) {
         // Este método é chamado quando o mouse é arrastado enquanto um botão do mouse está pressionado
-        // Adicione a lógica relevante aqui, se necessário
+        if (esperaFimReta) {
+            figuras.add(new Ponto(e.getX(), e.getY(), corAtual));
+            figuras.lastElement().torneSeVisivel(pnlDesenho.getGraphics());
+        } else if (esperaFimCirculo) {
+            figuras.add(new Circulo(circulo1.getCentro().getX(), circulo1.getCentro().getY(),
+                    (int) Math.sqrt(Math.pow(e.getX() - circulo1.getCentro().getX(), 2) + Math.pow(e.getY() - circulo1.getCentro().getY(), 2)), corAtual));
+            figuras.lastElement().torneSeVisivel(pnlDesenho.getGraphics());
+        } else if (esperarFimElipse) {
+            figuras.add(new Elipse(elipse1.getCentro().getX(), elipse1.getCentro().getY(),
+                    (int) Math.sqrt(Math.pow(e.getX() - elipse1.getCentro().getX(), 2) + Math.pow(e.getY() - elipse1.getCentro().getY(), 2)),
+                    (int) Math.sqrt(Math.pow(e.getX() - elipse1.getCentro().getX(), 2) + Math.pow(e.getY() - elipse1.getCentro().getY(), 2)), corAtual));
+            figuras.lastElement().torneSeVisivel(pnlDesenho.getGraphics());
+        }
     }
 
     @Override

@@ -19,12 +19,15 @@ public class Circulo extends Figura
 
         this.centro = new Ponto(x, y);
         this.raio = r;
+
+        System.out.println(this.centro.getX() + this.centro.getY() + this.raio);
     }
 
     public Circulo(String s) {
         StringTokenizer quebrador = new StringTokenizer(s, ":");
 
         quebrador.nextToken();
+        System.out.println(quebrador.nextToken());
 
         int x = Integer.parseInt(quebrador.nextToken());
         int y = Integer.parseInt(quebrador.nextToken());
@@ -76,4 +79,5 @@ public class Circulo extends Figura
                 ":" +
                 this.getCor().getBlue();
     }
+
 }

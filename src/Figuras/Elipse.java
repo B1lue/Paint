@@ -5,6 +5,7 @@ import java.util.StringTokenizer;
 import Figuras.Figura;
 import Figuras.Ponto;
 public class Elipse extends Figura {
+    public Elipse elipse1;
     protected Ponto centro;
 
     protected int raio1, raio2;
@@ -53,7 +54,9 @@ public class Elipse extends Figura {
 
     public void setRaio2(int r2) {
         this.raio2 = r2;
+
     }
+
 
     public Ponto getCentro() {
         return this.centro;
