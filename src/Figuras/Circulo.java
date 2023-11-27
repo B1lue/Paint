@@ -4,7 +4,9 @@ import java.awt.*;
 import java.util.StringTokenizer;
 import Figuras.Figura;
 import Figuras.Ponto;
-public class Circulo extends Figura {
+
+public class Circulo extends Figura
+{
     protected Ponto centro;
     protected int raio;
 

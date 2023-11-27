@@ -4,6 +4,8 @@ package EditorGrafico;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.io.Serial;
+import java.util.Objects;
 import java.util.Vector;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -11,9 +13,11 @@ import javax.swing.*;
 import Figuras.Figura;
 import Figuras.Linha;
 import Figuras.Ponto;
+import Figuras.Texto;
 
-public class Janela extends JFrame {
-    protected static final long serialVersionUID = 1L;
+public class Janela extends JFrame implements MouseListener, MouseMotionListener {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     protected JButton btnPonto = new JButton("Ponto"),
             btnLinha = new JButton("Linha"),
@@ -37,11 +41,16 @@ public class Janela extends JFrame {
 
     protected Vector<Figura> figuras = new Vector<Figura>();
 
+    protected JButton btnTexto = new JButton("Texto");
+    protected boolean esperaTexto;
+    protected String textoDigitado;
+
     public Janela() {
         super("Editor Gr�fico");
 
+
         try {
-            Image btnPontoImg = ImageIO.read(getClass().getResource("ponto.jpg"));
+            Image btnPontoImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("ponto.jpg")));
             btnPonto.setIcon(new ImageIcon(btnPontoImg));
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,
@@ -51,7 +60,7 @@ public class Janela extends JFrame {
         }
 
         try {
-            Image btnLinhaImg = ImageIO.read(getClass().getResource("linha.jpg"));
+            Image btnLinhaImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("linha.jpg")));
             btnLinha.setIcon(new ImageIcon(btnLinhaImg));
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,
@@ -61,7 +70,7 @@ public class Janela extends JFrame {
         }
 
         try {
-            Image btnCirculoImg = ImageIO.read(getClass().getResource("circulo.jpg"));
+            Image btnCirculoImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("circulo.jpg")));
             btnCirculo.setIcon(new ImageIcon(btnCirculoImg));
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,
@@ -71,7 +80,7 @@ public class Janela extends JFrame {
         }
 
         try {
-            Image btnElipseImg = ImageIO.read(getClass().getResource("elipse.jpg"));
+            Image btnElipseImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("elipse.jpg")));
             btnElipse.setIcon(new ImageIcon(btnElipseImg));
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,
@@ -81,7 +90,7 @@ public class Janela extends JFrame {
         }
 
         try {
-            Image btnCoresImg = ImageIO.read(getClass().getResource("cores.jpg"));
+            Image btnCoresImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("cores.jpg")));
             btnCores.setIcon(new ImageIcon(btnCoresImg));
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,
@@ -91,7 +100,7 @@ public class Janela extends JFrame {
         }
 
         try {
-            Image btnAbrirImg = ImageIO.read(getClass().getResource("abrir.jpg"));
+            Image btnAbrirImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("abrir.jpg")));
             btnAbrir.setIcon(new ImageIcon(btnAbrirImg));
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,
@@ -101,7 +110,7 @@ public class Janela extends JFrame {
         }
 
         try {
-            Image btnSalvarImg = ImageIO.read(getClass().getResource("salvar.jpg"));
+            Image btnSalvarImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("salvar.jpg")));
             btnSalvar.setIcon(new ImageIcon(btnSalvarImg));
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,
@@ -111,7 +120,7 @@ public class Janela extends JFrame {
         }
 
         try {
-            Image btnApagarImg = ImageIO.read(getClass().getResource("apagar.jpg"));
+            Image btnApagarImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("apagar.jpg")));
             btnApagar.setIcon(new ImageIcon(btnApagarImg));
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,
@@ -121,7 +130,7 @@ public class Janela extends JFrame {
         }
 
         try {
-            Image btnSairImg = ImageIO.read(getClass().getResource("sair.jpg"));
+            Image btnSairImg = ImageIO.read(Objects.requireNonNull(getClass().getResource("sair.jpg")));
             btnSair.setIcon(new ImageIcon(btnSairImg));
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,
@@ -136,7 +145,9 @@ public class Janela extends JFrame {
         JPanel pnlBotoes = new JPanel();
         FlowLayout flwBotoes = new FlowLayout();
         pnlBotoes.setLayout(flwBotoes);
+        btnTexto.addActionListener(new DesenhoDeTexto());
 
+        pnlBotoes.add(btnTexto);
         pnlBotoes.add(btnAbrir);
         pnlBotoes.add(btnSalvar);
         pnlBotoes.add(btnPonto);
@@ -166,6 +177,14 @@ public class Janela extends JFrame {
         this.setVisible(true);
     }
 
+    protected class DesenhoDeTexto implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            esperaTexto = true;
+            statusBar1.setText("Mensagem: clique o local para o texto");
+            textoDigitado = JOptionPane.showInputDialog("Digite o texto:");
+        }
+    }
+
     protected class MeuJPanel extends JPanel
             implements MouseListener,
             MouseMotionListener {
@@ -177,8 +196,7 @@ public class Janela extends JFrame {
         }
 
         public void paint(Graphics g) {
-            for (int i = 0; i < figuras.size(); i++)
-                figuras.get(i).torneSeVisivel(g);
+            for (Figura figura : figuras) figura.torneSeVisivel(g);
         }
 
         public void mousePressed(MouseEvent e) {
@@ -241,12 +259,79 @@ public class Janela extends JFrame {
         }
     }
 
-    protected class FechamentoDeJanela extends WindowAdapter {
+    protected static class FechamentoDeJanela extends WindowAdapter {
         public void windowClosing(WindowEvent e) {
             System.exit(0);
         }
     }
 
 
+    // ...
 
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        // Este método é chamado quando um botão do mouse é liberado
+        if (esperaFimReta) {
+            figuras.add(new Linha(p1.getX(), p1.getY(), e.getX(), e.getY(), corAtual));
+            figuras.lastElement().torneSeVisivel(pnlDesenho.getGraphics());
+            esperaFimReta = false;
+            statusBar1.setText("Mensagem:");
+        }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        // Este método é chamado quando um clique simples ocorre
+        if (esperaPonto) {
+            figuras.add(new Ponto(e.getX(), e.getY(), corAtual));
+            figuras.lastElement().torneSeVisivel(pnlDesenho.getGraphics());
+            esperaPonto = false;
+        } else if (esperaTexto) {
+            textoDigitado = JOptionPane.showInputDialog("Digite o texto:");
+            figuras.add(new Texto(e.getX(), e.getY(), textoDigitado, corAtual));
+            figuras.lastElement().torneSeVisivel(pnlDesenho.getGraphics());
+            esperaTexto = false;
+            statusBar1.setText("Mensagem:");
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        // Este método é chamado quando um botão do mouse é pressionado
+        if (esperaInicioReta) {
+            p1 = new Ponto(e.getX(), e.getY(), corAtual);
+            esperaInicioReta = false;
+            esperaFimReta = true;
+            statusBar1.setText("Mensagem: clique o ponto final da reta");
+        }
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        // Este método é chamado quando o mouse entra na área do componente
+        if (esperaFimReta) {
+            statusBar1.setText("Mensagem: clique o ponto final da reta");
+        }
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        // Este método é chamado quando o mouse sai da área do componente
+        if (esperaFimReta) {
+            statusBar1.setText("Mensagem:");
+        }
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        // Este método é chamado quando o mouse é arrastado enquanto um botão do mouse está pressionado
+        // Adicione a lógica relevante aqui, se necessário
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        // Este método é chamado quando o mouse é movido (não arrastado)
+        statusBar2.setText("Coordenada: " + e.getX() + ", " + e.getY());
+    }
 }
+
