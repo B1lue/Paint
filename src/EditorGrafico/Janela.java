@@ -30,7 +30,7 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
     protected JLabel statusBar1 = new JLabel("Mensagem:"),
             statusBar2 = new JLabel("Coordenada:");
 
-    protected boolean esperaPonto, esperaInicioReta, esperaFimReta, esperaCirculo, esperaInicioCirculo, esperaFimCirculo, esperarElipse, esperarFimElipse, esperarInicioElipse;
+    protected boolean esperaPonto, esperaInicioReta, esperaFimReta, esperaCirculo, esperaInicioCirculo, esperaFimCirculo, esperarFimElipse, esperarInicioElipse;
 
     protected Color corAtual = Color.BLACK;
     protected Ponto p1;
@@ -190,6 +190,29 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
     protected class MeuJPanel extends JPanel
             implements MouseListener,
             MouseMotionListener {
+        public void mouseReleased(MouseEvent e) {
+            // Este método é chamado quando um botão do mouse é liberado
+            if (esperarFimElipse) {
+                figuras.add(new Elipse(elipse1.getCentro().getX(), elipse1.getCentro().getY(),
+                        Math.abs(e.getX() - elipse1.getCentro().getX()),
+                        Math.abs(e.getY() - elipse1.getCentro().getY()), corAtual));
+                figuras.lastElement().torneSeVisivel(pnlDesenho.getGraphics());
+                esperarFimElipse = false;
+                statusBar1.setText("Mensagem: caralho so pika");
+            } else if (esperaFimReta) {
+                figuras.add(new Linha(p1.getX(), p1.getY(), e.getX(), e.getY(), corAtual));
+                figuras.lastElement().torneSeVisivel(pnlDesenho.getGraphics());
+                esperaFimReta = false;
+                statusBar1.setText("Mensagem: se fode ai");
+            } else if (esperaFimCirculo) {
+                figuras.add(new Circulo(circulo1.getCentro().getX(), circulo1.getCentro().getY(),
+                        (int) Math.sqrt(Math.pow(e.getX() - circulo1.getCentro().getX(), 2) + Math.pow(e.getY() - circulo1.getCentro().getY(), 2)), corAtual));
+                figuras.lastElement().torneSeVisivel(pnlDesenho.getGraphics());
+                esperaFimCirculo = false;
+                statusBar1.setText("Mensagem: cara como eu consegui isso ?");
+            }
+        }
+
         public MeuJPanel() {
             super();
 
@@ -211,52 +234,21 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
                 esperaInicioReta = false;
                 esperaFimReta = true;
                 statusBar1.setText("Mensagem: clique o ponto final da reta");
-            } else if (esperaFimReta) {
-                esperaInicioReta = false;
-                esperaFimReta = false;
-                figuras.add(new Linha(p1.getX(), p1.getY(), e.getX(), e.getY(), corAtual));
-                figuras.get(figuras.size() - 1).torneSeVisivel(pnlDesenho.getGraphics());
-                statusBar1.setText("Mensagem:");
-            }
-            if (esperaCirculo) {
-                figuras.add(new Circulo(circulo1.getCentro().getX(), circulo1.getCentro().getY(),
-                        (int) Math.sqrt(Math.pow(e.getX() - circulo1.getCentro().getX(), 2) + Math.pow(e.getY() - circulo1.getCentro().getY(), 2)), corAtual));
-                figuras.get(figuras.size() - 1).torneSeVisivel(pnlDesenho.getGraphics());
-                esperaCirculo = false;
             } else if (esperaInicioCirculo) {
                 circulo1 = new Circulo(e.getX(), e.getY(), 0, corAtual);
                 esperaInicioCirculo = false;
                 esperaFimCirculo = true;
                 statusBar1.setText("Mensagem: clique o ponto final do círculo");
-            } else if (esperaFimCirculo) {
-                esperaInicioCirculo = false;
-                esperaFimCirculo = false;
-
-                figuras.add(new Circulo(circulo1.getCentro().getX(), circulo1.getCentro().getY(),
-                        (int) Math.sqrt(Math.pow(e.getX() - circulo1.getCentro().getX(), 2) + Math.pow(e.getY() - circulo1.getCentro().getY(), 2)), corAtual));
-                figuras.get(figuras.size() - 1).torneSeVisivel(pnlDesenho.getGraphics());
-                statusBar1.setText("Mensagem: foi se o circulo");
-            }
-            else if (esperaTexto) {
+            } else if (esperaTexto) {
                 figuras.add(new Texto(e.getX(), e.getY(), textoDigitado, corAtual));
                 figuras.get(figuras.size() - 1).torneSeVisivel(pnlDesenho.getGraphics());
                 esperaTexto = false;
                 statusBar1.setText("Mensagem:");
-            }    if (esperarInicioElipse) {
+            }
+            if (esperarInicioElipse) {
                 elipse1 = new Elipse(e.getX(), e.getY(), 0, 0, corAtual);
                 esperarInicioElipse = false;
                 esperarFimElipse = true;
-            }
-        }
-
-        public void mouseReleased(MouseEvent e) {
-            if (esperarFimElipse) {
-                figuras.add(new Elipse(elipse1.getCentro().getX(), elipse1.getCentro().getY(),
-                        Math.abs(e.getX() - elipse1.getCentro().getX()),
-                        Math.abs(e.getY() - elipse1.getCentro().getY()), corAtual));
-                figuras.lastElement().torneSeVisivel(pnlDesenho.getGraphics());
-                esperarFimElipse = false;
-                statusBar1.setText("Mensagem:");
             }
         }
 
@@ -269,8 +261,25 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
         public void mouseExited(MouseEvent e) {
         }
 
+        @Override
         public void mouseDragged(MouseEvent e) {
-
+            // Este método torna visivel a figura sendo desenhada
+            if (esperaFimReta) {
+                pnlDesenho.getGraphics().clearRect(0, 0, pnlDesenho.getWidth(), pnlDesenho.getHeight());
+                new Linha(p1.getX(), p1.getY(), e.getX(), e.getY(), corAtual).torneSeVisivel(pnlDesenho.getGraphics());
+                pnlDesenho.paint(pnlDesenho.getGraphics());
+            }else if(esperaFimCirculo){
+                pnlDesenho.getGraphics().clearRect(0, 0, pnlDesenho.getWidth(), pnlDesenho.getHeight());
+                int raio = (int) Math.sqrt(Math.pow(e.getX() - circulo1.getCentro().getX(), 2) + Math.pow(e.getY() - circulo1.getCentro().getY(), 2));
+                new Circulo(circulo1.getCentro().getX(), circulo1.getCentro().getY(), raio, corAtual).torneSeVisivel(pnlDesenho.getGraphics());
+                pnlDesenho.paint(pnlDesenho.getGraphics());
+            }else if(esperarFimElipse){
+                pnlDesenho.getGraphics().clearRect(0, 0, pnlDesenho.getWidth(), pnlDesenho.getHeight());
+                int semiEixoA = Math.abs(e.getX() - elipse1.getCentro().getX());
+                int semiEixoB = Math.abs(e.getY() - elipse1.getCentro().getY());
+                new Elipse(elipse1.getCentro().getX(), elipse1.getCentro().getY(), semiEixoA, semiEixoB, corAtual).torneSeVisivel(pnlDesenho.getGraphics());
+                pnlDesenho.paint(pnlDesenho.getGraphics());
+            }
         }
 
         public void mouseMoved(MouseEvent e) {
@@ -279,6 +288,7 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
     }
 
     protected class DesenhoDePonto implements ActionListener {
+
         public void actionPerformed(ActionEvent e) {
             esperaPonto = true;
             esperaInicioReta = false;
@@ -289,6 +299,7 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
     }
 
     protected class DesenhoDeReta implements ActionListener {
+
         public void actionPerformed(ActionEvent e) {
             esperaPonto = false;
             esperaInicioReta = true;
@@ -299,6 +310,7 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
     }
 
     protected class DesenhoCirculo implements ActionListener {
+
         public void actionPerformed(ActionEvent e) {
             // Quando o botão de círculo é clicado, definimos as variáveis de estado apropriadas
             esperaPonto = false;
@@ -310,8 +322,9 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
         }
     }
 
-    protected  class DesenhoDeElipse implements ActionListener{
-        public void actionPerformed(ActionEvent e){
+    protected class DesenhoDeElipse implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
             esperaPonto = false;
             esperaInicioReta = false;
             esperaFimReta = false;
@@ -327,8 +340,8 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
         }
     }
 
-    protected  static class SalvarArquivo implements ActionListener{
-        public void actionPerformed(ActionEvent e){
+    protected static class SalvarArquivo implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
             JFileChooser fc = new JFileChooser();
             int res = fc.showSaveDialog(null);
             if (res == JFileChooser.APPROVE_OPTION) {
@@ -354,23 +367,20 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
             figuras.add(new Linha(p1.getX(), p1.getY(), e.getX(), e.getY(), corAtual));
             figuras.lastElement().torneSeVisivel(pnlDesenho.getGraphics());
             esperaFimReta = false;
-            statusBar1.setText("Mensagem:");
-        }
-
-        if (esperaCirculo) {
+            statusBar1.setText("Mensagem: aaaaaaaaaaaaa");
+        } else if (esperaFimCirculo) {
             figuras.add(new Circulo(circulo1.getCentro().getX(), circulo1.getCentro().getY(),
                     (int) Math.sqrt(Math.pow(e.getX() - circulo1.getCentro().getX(), 2) + Math.pow(e.getY() - circulo1.getCentro().getY(), 2)), corAtual));
             figuras.lastElement().torneSeVisivel(pnlDesenho.getGraphics());
             esperaFimCirculo = false;
-            statusBar1.setText("ola mundo ");
-        }
-        if(esperarElipse){
+            statusBar1.setText("Mensagem: aaaaaaaa");
+        } else if (esperarFimElipse) {
             figuras.add(new Elipse(elipse1.getCentro().getX(), elipse1.getCentro().getY(),
-                    (int) Math.sqrt(Math.pow(e.getX() - elipse1.getCentro().getX(), 2) + Math.pow(e.getY() - elipse1.getCentro().getY(), 2)),
-                    (int) Math.sqrt(Math.pow(e.getX() - elipse1.getCentro().getX(), 2) + Math.pow(e.getY() - elipse1.getCentro().getY(), 2)), corAtual));
+                    Math.abs(e.getX() - elipse1.getCentro().getX()),
+                    Math.abs(e.getY() - elipse1.getCentro().getY()), corAtual));
             figuras.lastElement().torneSeVisivel(pnlDesenho.getGraphics());
-            esperaFimCirculo = false;
-            statusBar1.setText("Meu cu ");
+            esperarFimElipse = false;
+            statusBar1.setText("Mensagem: a a a a");
         }
     }
 
@@ -386,29 +396,32 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
             figuras.add(new Texto(e.getX(), e.getY(), textoDigitado, corAtual));
             figuras.lastElement().torneSeVisivel(pnlDesenho.getGraphics());
             esperaTexto = false;
-            statusBar1.setText("Mensagem:");
+            statusBar1.setText("Mensagem: texto adicionado");
         }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
         // Este método é chamado quando um botão do mouse é pressionado
-        if (esperaInicioReta) {
+        if (esperaPonto) {
+            figuras.add(new Ponto(e.getX(), e.getY(), corAtual));
+            figuras.lastElement().torneSeVisivel(pnlDesenho.getGraphics());
+            esperaPonto = false;
+        } else if (esperaInicioReta) {
             p1 = new Ponto(e.getX(), e.getY(), corAtual);
             esperaInicioReta = false;
             esperaFimReta = true;
             statusBar1.setText("Mensagem: clique o ponto final da reta");
-        }
-
-        if (esperaInicioCirculo) {
+        } else if (esperaInicioCirculo) {
             circulo1 = new Circulo(e.getX(), e.getY(), 0, corAtual);
             esperaInicioCirculo = false;
             esperaFimCirculo = true;
-        }
-        if (esperarInicioElipse){
+            statusBar1.setText("Mensagem: arraste para definir o raio do círculo");
+        } else if (esperarInicioElipse) {
             elipse1 = new Elipse(e.getX(), e.getY(), 0, 0, corAtual);
             esperarInicioElipse = false;
             esperarFimElipse = true;
+            statusBar1.setText("Mensagem: arraste para definir os eixos da elipse");
         }
     }
 
@@ -429,7 +442,7 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
     public void mouseExited(MouseEvent e) {
         // Este método é chamado quando o mouse sai da área do componente
         if (esperaFimReta) {
-            statusBar1.setText("Mensagem:");
+            statusBar1.setText("Mensagem: crloooooooooooooooooo");
         }
     }
 
@@ -440,20 +453,20 @@ public class Janela extends JFrame implements MouseListener, MouseMotionListener
             figuras.add(new Ponto(e.getX(), e.getY(), corAtual));
             figuras.lastElement().torneSeVisivel(pnlDesenho.getGraphics());
         } else if (esperaFimCirculo) {
-            figuras.add(new Circulo(circulo1.getCentro().getX(), circulo1.getCentro().getY(),
-                    (int) Math.sqrt(Math.pow(e.getX() - circulo1.getCentro().getX(), 2) + Math.pow(e.getY() - circulo1.getCentro().getY(), 2)), corAtual));
-            figuras.lastElement().torneSeVisivel(pnlDesenho.getGraphics());
+            pnlDesenho.paint(pnlDesenho.getGraphics());
+            int raio = (int) Math.sqrt(Math.pow(e.getX() - circulo1.getCentro().getX(), 2) + Math.pow(e.getY() - circulo1.getCentro().getY(), 2));
+            new Circulo(circulo1.getCentro().getX(), circulo1.getCentro().getY(), raio, corAtual).torneSeVisivel(pnlDesenho.getGraphics());
         } else if (esperarFimElipse) {
-            figuras.add(new Elipse(elipse1.getCentro().getX(), elipse1.getCentro().getY(),
-                    (int) Math.sqrt(Math.pow(e.getX() - elipse1.getCentro().getX(), 2) + Math.pow(e.getY() - elipse1.getCentro().getY(), 2)),
-                    (int) Math.sqrt(Math.pow(e.getX() - elipse1.getCentro().getX(), 2) + Math.pow(e.getY() - elipse1.getCentro().getY(), 2)), corAtual));
-            figuras.lastElement().torneSeVisivel(pnlDesenho.getGraphics());
+            pnlDesenho.paint(pnlDesenho.getGraphics());
+            int semiEixoA = Math.abs(e.getX() - elipse1.getCentro().getX());
+            int semiEixoB = Math.abs(e.getY() - elipse1.getCentro().getY());
+            new Elipse(elipse1.getCentro().getX(), elipse1.getCentro().getY(), semiEixoA, semiEixoB, corAtual).torneSeVisivel(pnlDesenho.getGraphics());
         }
     }
 
+
     @Override
     public void mouseMoved(MouseEvent e) {
-        // Este método é chamado quando o mouse é movido (não arrastado)
         statusBar2.setText("Coordenada: " + e.getX() + ", " + e.getY());
     }
 }
