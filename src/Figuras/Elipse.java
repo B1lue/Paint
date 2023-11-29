@@ -2,23 +2,16 @@ package Figuras;
 
 import java.awt.*;
 import java.util.StringTokenizer;
-import Figuras.Figura;
-import Figuras.Ponto;
+
 public class Elipse extends Figura {
-    public Elipse elipse1;
     protected Ponto centro;
-
+    protected Color corPreenchimento;
     protected int raio1, raio2;
-
-    public Elipse(int x, int y, int r1, int r2) {
-        this(x, y, r1, r2, Color.BLACK);
-    }
 
     public Elipse(int x, int y, int r1, int r2, Color cor) {
         super(cor);
-
+        this.corPreenchimento = corPreenchimento;
         this.centro = new Ponto(x, y);
-
         this.raio1 = r1;
         this.raio2 = r2;
     }
@@ -28,49 +21,30 @@ public class Elipse extends Figura {
 
         quebrador.nextToken();
 
-        int x = Integer.parseInt(quebrador.nextToken());
-        int y = Integer.parseInt(quebrador.nextToken());
+        int[] valores = new int[4];
+        int i = 0;
 
-        int r1 = Integer.parseInt(quebrador.nextToken());
-        int r2 = Integer.parseInt(quebrador.nextToken());
+        while (quebrador.hasMoreTokens() && i < valores.length) {
+            valores[i] = Integer.parseInt(quebrador.nextToken());
+            i++;
+        }
 
         Color cor = new Color(Integer.parseInt(quebrador.nextToken()),  // R
                 Integer.parseInt(quebrador.nextToken()),  // G
                 Integer.parseInt(quebrador.nextToken())); // B
 
-        this.centro = new Ponto(x, y, cor);
-        this.raio1 = r1;
-        this.raio2 = r2;
+        this.centro = new Ponto(valores[0], valores[1], cor);
+        this.raio1 = valores[2];
+        this.raio2 = valores[3];
         this.cor = cor;
     }
-
-    public void setCentro(int x, int y) {
-        this.centro = new Ponto(x, y, this.getCor());
-    }
-
-    public void setRaio1(int r1) {
-        this.raio1 = r1;
-    }
-
-    public void setRaio2(int r2) {
-        this.raio2 = r2;
-
-    }
-
 
     public Ponto getCentro() {
         return this.centro;
     }
 
-    public int setRaio1() {
-        return this.raio1;
-    }
-
-    public int setRaio2() {
-        return this.raio2;
-    }
-
     public void torneSeVisivel(Graphics g) {
+        g.setColor(this.corPreenchimento);
         g.setColor(this.cor);
         g.drawOval(this.centro.getX() - raio1, this.centro.getY() - raio2, 2 * raio1, 2 * raio2);
 
@@ -86,10 +60,11 @@ public class Elipse extends Figura {
                 ":" +
                 this.raio2 +
                 ":" +
-                this.getCor().getRed() +
+                this.cor.getRed() +
                 ":" +
-                this.getCor().getGreen() +
+                this.cor.getGreen() +
                 ":" +
-                this.getCor().getBlue();
+                this.cor.getBlue() +
+                ":";
     }
 }

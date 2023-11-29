@@ -2,7 +2,6 @@ package Figuras;
 
 import java.awt.*;
 import java.util.StringTokenizer;
-import Figuras.Figura;
 public class Ponto extends Figura {
     protected int x, y;
 
@@ -28,14 +27,6 @@ public class Ponto extends Figura {
         this.cor = new Color(Integer.parseInt(quebrador.nextToken()),  // R
                 Integer.parseInt(quebrador.nextToken()),  // G
                 Integer.parseInt(quebrador.nextToken())); // B
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
     }
 
     public int getX() {

@@ -2,17 +2,12 @@ package Figuras;
 
 import java.awt.*;
 import java.util.StringTokenizer;
-import Figuras.Figura;
-import Figuras.Ponto;
+
 
 public class Circulo extends Figura
 {
     protected Ponto centro;
     protected int raio;
-
-    public Circulo(int x, int y, int r) {
-        this(x, y, r, Color.BLACK);
-    }
 
     public Circulo(int x, int y, int r, Color cor) {
         super(cor);
@@ -24,39 +19,32 @@ public class Circulo extends Figura
     }
 
     public Circulo(String s) {
-        StringTokenizer quebrador = new StringTokenizer(s, ":");
+        StringTokenizer quebrador = new StringTokenizer(s,":");
 
         quebrador.nextToken();
-        System.out.println(quebrador.nextToken());
 
-        int x = Integer.parseInt(quebrador.nextToken());
-        int y = Integer.parseInt(quebrador.nextToken());
+        int x = 0;
+        int y = 0;
+        int raio = 0;
 
-        int r = Integer.parseInt(quebrador.nextToken());
+        if (quebrador.hasMoreTokens()) {
+            x = Integer.parseInt(quebrador.nextToken());
+        }
 
-        Color cor = new Color(Integer.parseInt(quebrador.nextToken()),  // R
-                Integer.parseInt(quebrador.nextToken()),  // G
-                Integer.parseInt(quebrador.nextToken())); // B
+        if (quebrador.hasMoreTokens()) {
+            y = Integer.parseInt(quebrador.nextToken());
+        }
 
-        this.centro = new Ponto(x, y, cor);
-        this.raio = r;
-        this.cor = cor;
-    }
+        if (quebrador.hasMoreTokens()) {
+            raio = Integer.parseInt(quebrador.nextToken());
+        }
 
-    public void setCentro(int x, int y) {
-        this.centro = new Ponto(x, y, this.getCor());
-    }
-
-    public void setRaio(int r) {
-        this.raio = r;
+        this.centro = new Ponto(x, y, Color.BLACK);
+        this.raio = raio;
     }
 
     public Ponto getCentro() {
         return this.centro;
-    }
-
-    public int setRaio() {
-        return this.raio;
     }
 
     public void torneSeVisivel(Graphics g) {
@@ -73,11 +61,11 @@ public class Circulo extends Figura
                 ":" +
                 this.raio +
                 ":" +
-                this.getCor().getRed() +
+                this.cor.getRed() +
                 ":" +
-                this.getCor().getGreen() +
+                this.cor.getGreen() +
                 ":" +
-                this.getCor().getBlue();
+                this.cor.getBlue();
     }
 
 }

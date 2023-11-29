@@ -6,8 +6,8 @@ import java.awt.Graphics;
 import java.util.StringTokenizer;
 
 public class Texto extends Figura {
-    private String texto;
-    private Ponto ponto;
+    private final String texto;
+    private final Ponto ponto;
 
     public Texto(int x, int y, String texto, Color cor) {
         super(cor);
@@ -21,6 +21,7 @@ public class Texto extends Figura {
 
         int x = Integer.parseInt(quebrador.nextToken());
         int y = Integer.parseInt(quebrador.nextToken());
+
         Color cor = new Color(Integer.parseInt(quebrador.nextToken()),
                 Integer.parseInt(quebrador.nextToken()),
                 Integer.parseInt(quebrador.nextToken()));
@@ -28,22 +29,6 @@ public class Texto extends Figura {
         this.texto = quebrador.nextToken();
         this.ponto = new Ponto(x, y, cor);
         this.cor = cor;
-    }
-
-    public void setTexto(String texto) {
-        this.texto = texto;
-    }
-
-    public void setPonto(int x, int y) {
-        this.ponto = new Ponto(x, y, this.getCor());
-    }
-
-    public String getTexto() {
-        return this.texto;
-    }
-
-    public Ponto getPonto() {
-        return this.ponto;
     }
 
     public void torneSeVisivel(Graphics g) {
@@ -58,12 +43,12 @@ public class Texto extends Figura {
                 ":" +
                 this.ponto.getY() +
                 ":" +
-                this.texto +
+                this.cor.getRed() +
                 ":" +
-                this.getCor().getRed() +
+                this.cor.getGreen() +
                 ":" +
-                this.getCor().getGreen() +
+                this.cor.getBlue() +
                 ":" +
-                this.getCor().getBlue();
+                this.texto;
     }
 }

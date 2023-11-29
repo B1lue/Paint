@@ -2,14 +2,8 @@ package Figuras;
 
 import java.awt.*;
 import java.util.StringTokenizer;
-import Figuras.Figura;
-import Figuras.Ponto;
 public class Linha extends Figura {
     protected Ponto p1, p2;
-
-    public Linha(int x1, int y1, int x2, int y2) {
-        this(x1, y1, x2, y2, Color.BLACK);
-    }
 
     public Linha(int x1, int y1, int x2, int y2, Color cor) {
         super(cor);
@@ -23,45 +17,25 @@ public class Linha extends Figura {
 
         quebrador.nextToken();
 
-        int x1 = Integer.parseInt(quebrador.nextToken());
-        int y1 = Integer.parseInt(quebrador.nextToken());
+        int[] valores = new int[4];
+        int i = 0;
 
-        int x2 = Integer.parseInt(quebrador.nextToken());
-        int y2 = Integer.parseInt(quebrador.nextToken());
-
+        while (quebrador.hasMoreTokens() && i < valores.length) {
+            valores[i] = Integer.parseInt(quebrador.nextToken());
+            i++;
+        }
         Color cor = new Color(Integer.parseInt(quebrador.nextToken()),  // R
                 Integer.parseInt(quebrador.nextToken()),  // G
                 Integer.parseInt(quebrador.nextToken())); // B
 
-        this.p1 = new Ponto(x1, y1, cor);
-        this.p2 = new Ponto(x2, y2, cor);
+        this.p1 = new Ponto(valores[0], valores[1], cor);
+        this.p2 = new Ponto(valores[2], valores[3], cor);
         this.cor = cor;
     }
 
-    public void setP1(int x, int y) {
-        this.p1 = new Ponto(x, y, this.getCor());
-    }
-
-    public void setP2(int x, int y) {
-        this.p2 = new Ponto(x, y, this.getCor());
-    }
-
-    public Ponto getP1() {
-        return this.p1;
-    }
-
-    public Ponto getP2() {
-        return this.p2;
-    }
-
-    public void torneSeVisivel(Graphics g) {
-        g.setColor(this.cor);
-        g.drawLine(this.p1.getX(), this.p1.getY(),   // ponto inicial
-                this.p2.getX(), this.p2.getY());  // ponto final
-    }
-
+    @Override
     public String toString() {
-        return "r:" +
+        return "l:" +
                 this.p1.getX() +
                 ":" +
                 this.p1.getY() +
@@ -70,10 +44,17 @@ public class Linha extends Figura {
                 ":" +
                 this.p2.getY() +
                 ":" +
-                this.getCor().getRed() +
+                this.cor.getRed() +
                 ":" +
-                this.getCor().getGreen() +
+                this.cor.getGreen() +
                 ":" +
-                this.getCor().getBlue();
+                this.cor.getBlue();
     }
+
+    public void torneSeVisivel(Graphics g) {
+        g.setColor(this.cor);
+        g.drawLine(this.p1.getX(), this.p1.getY(),   // ponto inicial
+                this.p2.getX(), this.p2.getY());  // ponto final
+    }
+
 }
