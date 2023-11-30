@@ -3,33 +3,29 @@ package Figuras;
 import java.awt.*;
 import java.util.StringTokenizer;
 
-public class Quadrado extends Figura {
+public class Retangulo extends Figura {
     protected Ponto p1;
-    protected int lado;
-    protected int direcao;
+    protected int largura;
+    protected int altura;
     protected Color corDePreenchimento;
-    public Quadrado(int x, int y, int lado, int direcao, Color cor,Color corDePreenchimento) {
+
+    public Retangulo(int x, int y, int largura, int altura, Color cor, Color corDePreenchimento) {
         super(cor);
         this.corDePreenchimento = corDePreenchimento;
         this.p1 = new Ponto(x, y, cor);
-        this.lado = lado;
-        this.direcao = direcao;
+        this.largura = largura;
+        this.altura = altura;
     }
 
-    public Quadrado(String s) {
+    public Retangulo(String s) {
         StringTokenizer quebrador = new StringTokenizer(s, ":");
 
         quebrador.nextToken();
 
-        //int x1 = Integer.parseInt(quebrador.nextToken());
-        //int y1 = Integer.parseInt(quebrador.nextToken());
-
-        // int lado = Integer.parseInt(quebrador.nextToken());
 
         this.cor = new Color(Integer.parseInt(quebrador.nextToken()),  // R
                 Integer.parseInt(quebrador.nextToken()),  // G
-                Integer.parseInt(quebrador.nextToken()));
-
+                Integer.parseInt(quebrador.nextToken())); // B
     }
 
     public Ponto getP1() {
@@ -39,18 +35,20 @@ public class Quadrado extends Figura {
     @Override
     public void torneSeVisivel(Graphics g) {
         g.setColor(this.corDePreenchimento);
-        g.fillRect(this.p1.getX(), this.p1.getY(), this.lado, this.lado);
+        g.fillRect(this.p1.getX(), this.p1.getY(), this.largura, this.altura);
         g.setColor(this.cor);
-        g.drawRect(this.p1.getX(), this.p1.getY(), this.lado, this.lado);
+        g.drawRect(this.p1.getX(), this.p1.getY(), this.largura, this.altura);
     }
 
     public String toString() {
-        return "q:" +
+        return "r:" +
                 this.p1.getX() +
                 ":" +
                 this.p1.getY() +
                 ":" +
-                this.lado +
+                this.largura +
+                ":" +
+                this.altura +
                 ":" +
                 this.cor.getRed() +
                 ":" +

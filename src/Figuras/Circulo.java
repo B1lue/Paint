@@ -8,10 +8,11 @@ public class Circulo extends Figura
 {
     protected Ponto centro;
     protected int raio;
+    protected Color corPreenchimento;
 
-    public Circulo(int x, int y, int r, Color cor) {
+    public Circulo(int x, int y, int r, Color cor, Color corPreenchimento) {
         super(cor);
-
+        this.corPreenchimento = corPreenchimento;
         this.centro = new Ponto(x, y);
         this.raio = r;
 
@@ -50,6 +51,8 @@ public class Circulo extends Figura
     public void torneSeVisivel(Graphics g) {
         g.setColor(this.cor);
         g.drawOval(this.centro.getX() - raio, this.centro.getY() - raio, 2 * raio, 2 * raio);
+        g.setColor(this.corPreenchimento);
+        g.fillOval(this.centro.getX() - raio, this.centro.getY() - raio, 2 * raio, 2 * raio);
 
     }
 

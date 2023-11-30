@@ -8,11 +8,17 @@ import java.util.StringTokenizer;
 public class Texto extends Figura {
     private final String texto;
     private final Ponto ponto;
+    private final String fontName;
+    private final int fontSize;
+    private final int fontStyle;
 
-    public Texto(int x, int y, String texto, Color cor) {
+    public Texto(int x, int y, String texto, Color cor, String fontName, int fontSize, int fontStyle) {
         super(cor);
         this.texto = texto;
         this.ponto = new Ponto(x, y, cor);
+        this.fontName = fontName;
+        this.fontSize = fontSize;
+        this.fontStyle = fontStyle;
     }
 
     public Texto(String s) {
@@ -29,11 +35,14 @@ public class Texto extends Figura {
         this.texto = quebrador.nextToken();
         this.ponto = new Ponto(x, y, cor);
         this.cor = cor;
+        this.fontName = quebrador.nextToken();
+        this.fontSize = Integer.parseInt(quebrador.nextToken());
+        this.fontStyle = Integer.parseInt(quebrador.nextToken());
     }
 
     public void torneSeVisivel(Graphics g) {
         g.setColor(this.cor);
-        g.setFont(new Font("Arial", Font.PLAIN, 12));
+        g.setFont(new Font(this.fontName, this.fontStyle, this.fontSize));
         g.drawString(this.texto, this.ponto.getX(), this.ponto.getY());
     }
 
@@ -49,6 +58,12 @@ public class Texto extends Figura {
                 ":" +
                 this.cor.getBlue() +
                 ":" +
-                this.texto;
+                this.texto +
+                ":" +
+                this.fontName +
+                ":" +
+                this.fontSize +
+                ":" +
+                this.fontStyle;
     }
 }

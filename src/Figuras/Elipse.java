@@ -8,7 +8,7 @@ public class Elipse extends Figura {
     protected Color corPreenchimento;
     protected int raio1, raio2;
 
-    public Elipse(int x, int y, int r1, int r2, Color cor) {
+    public Elipse(int x, int y, int r1, int r2, Color cor,Color corPreenchimento) {
         super(cor);
         this.corPreenchimento = corPreenchimento;
         this.centro = new Ponto(x, y);
@@ -45,6 +45,7 @@ public class Elipse extends Figura {
 
     public void torneSeVisivel(Graphics g) {
         g.setColor(this.corPreenchimento);
+        g.fillOval(this.centro.getX() - raio1, this.centro.getY() - raio2, 2 * raio1, 2 * raio2);
         g.setColor(this.cor);
         g.drawOval(this.centro.getX() - raio1, this.centro.getY() - raio2, 2 * raio1, 2 * raio2);
 
