@@ -23,27 +23,54 @@ public class Texto extends Figura {
 
     public Texto(String s) {
         StringTokenizer quebrador = new StringTokenizer(s, ":");
+
         quebrador.nextToken();
 
         int x = Integer.parseInt(quebrador.nextToken());
         int y = Integer.parseInt(quebrador.nextToken());
 
-        Color cor = new Color(Integer.parseInt(quebrador.nextToken()),
-                Integer.parseInt(quebrador.nextToken()),
-                Integer.parseInt(quebrador.nextToken()));
+        this.cor = getColorFromTokenizer(quebrador);
 
         this.texto = quebrador.nextToken();
-        this.ponto = new Ponto(x, y, cor);
-        this.cor = cor;
-        this.fontName = quebrador.nextToken();
-        this.fontSize = Integer.parseInt(quebrador.nextToken());
-        this.fontStyle = Integer.parseInt(quebrador.nextToken());
+
+        if (quebrador.hasMoreTokens()) {
+            this.fontName = quebrador.nextToken();
+        } else {
+            this.fontName = "Arial"; // Valor padrão
+        }
+
+        if (quebrador.hasMoreTokens()) {
+            this.fontSize = Integer.parseInt(quebrador.nextToken());
+        } else {
+            this.fontSize = 12; // Valor padrão
+        }
+
+        if (quebrador.hasMoreTokens()) {
+            this.fontStyle = Integer.parseInt(quebrador.nextToken());
+        } else {
+            this.fontStyle = Font.PLAIN; // Valor padrão
+        }
+
+        this.ponto = new Ponto(x, y, this.cor);
     }
 
+    private Color getColorFromTokenizer(StringTokenizer quebrador) {
+        int r = Integer.parseInt(quebrador.nextToken());
+        int g = Integer.parseInt(quebrador.nextToken());
+        int b = Integer.parseInt(quebrador.nextToken());
+        return new Color(r, g, b);
+    }
+
+    @Override
     public void torneSeVisivel(Graphics g) {
-        g.setColor(this.cor);
-        g.setFont(new Font(this.fontName, this.fontStyle, this.fontSize));
-        g.drawString(this.texto, this.ponto.getX(), this.ponto.getY());
+        if (texto != null) {
+            g.setColor(this.cor);
+            g.setFont(new Font(this.fontName, this.fontStyle, this.fontSize));
+            String[] linhas = this.texto.split("\n");
+            for (int i = 0; i < linhas.length; i++) {
+                g.drawString(linhas[i], this.ponto.getX(), this.ponto.getY() + i * g.getFontMetrics().getHeight());
+            }
+        }
     }
 
     public String toString() {
@@ -52,11 +79,7 @@ public class Texto extends Figura {
                 ":" +
                 this.ponto.getY() +
                 ":" +
-                this.cor.getRed() +
-                ":" +
-                this.cor.getGreen() +
-                ":" +
-                this.cor.getBlue() +
+                getColorString(this.cor) +
                 ":" +
                 this.texto +
                 ":" +
@@ -65,5 +88,9 @@ public class Texto extends Figura {
                 this.fontSize +
                 ":" +
                 this.fontStyle;
+    }
+
+    private String getColorString(Color color) {
+        return color.getRed() + ":" + color.getGreen() + ":" + color.getBlue();
     }
 }

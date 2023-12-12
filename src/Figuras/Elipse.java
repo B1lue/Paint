@@ -5,13 +5,13 @@ import java.util.StringTokenizer;
 
 public class Elipse extends Figura {
     protected Ponto centro;
-    protected Color corPreenchimento;
     protected int raio1, raio2;
+    protected Color corDePreenchimento;
 
-    public Elipse(int x, int y, int r1, int r2, Color cor,Color corPreenchimento) {
+    public Elipse(int x, int y, int r1, int r2, Color cor, Color corDePreenchimento) {
         super(cor);
-        this.corPreenchimento = corPreenchimento;
-        this.centro = new Ponto(x, y);
+        this.corDePreenchimento = corDePreenchimento;
+        this.centro = new Ponto(x, y, cor);
         this.raio1 = r1;
         this.raio2 = r2;
     }
@@ -21,34 +21,33 @@ public class Elipse extends Figura {
 
         quebrador.nextToken();
 
-        int[] valores = new int[4];
-        int i = 0;
+        int x = Integer.parseInt(quebrador.nextToken());
+        int y = Integer.parseInt(quebrador.nextToken());
+        this.raio1 = Integer.parseInt(quebrador.nextToken());
+        this.raio2 = Integer.parseInt(quebrador.nextToken());
 
-        while (quebrador.hasMoreTokens() && i < valores.length) {
-            valores[i] = Integer.parseInt(quebrador.nextToken());
-            i++;
-        }
+        this.cor = getColorFromTokenizer(quebrador);
+        this.corDePreenchimento = getColorFromTokenizer(quebrador);
+        this.centro = new Ponto(x, y, this.cor);
+    }
 
-        Color cor = new Color(Integer.parseInt(quebrador.nextToken()),  // R
-                Integer.parseInt(quebrador.nextToken()),  // G
-                Integer.parseInt(quebrador.nextToken())); // B
-
-        this.centro = new Ponto(valores[0], valores[1], cor);
-        this.raio1 = valores[2];
-        this.raio2 = valores[3];
-        this.cor = cor;
+    private Color getColorFromTokenizer(StringTokenizer quebrador) {
+        int r = Integer.parseInt(quebrador.nextToken());
+        int g = Integer.parseInt(quebrador.nextToken());
+        int b = Integer.parseInt(quebrador.nextToken());
+        return new Color(r, g, b);
     }
 
     public Ponto getCentro() {
         return this.centro;
     }
 
+    @Override
     public void torneSeVisivel(Graphics g) {
-        g.setColor(this.corPreenchimento);
+        g.setColor(this.corDePreenchimento);
         g.fillOval(this.centro.getX() - raio1, this.centro.getY() - raio2, 2 * raio1, 2 * raio2);
         g.setColor(this.cor);
         g.drawOval(this.centro.getX() - raio1, this.centro.getY() - raio2, 2 * raio1, 2 * raio2);
-
     }
 
     public String toString() {
@@ -61,11 +60,12 @@ public class Elipse extends Figura {
                 ":" +
                 this.raio2 +
                 ":" +
-                this.cor.getRed() +
+                getColorString(this.cor) +
                 ":" +
-                this.cor.getGreen() +
-                ":" +
-                this.cor.getBlue() +
-                ":";
+                getColorString(this.corDePreenchimento);
+    }
+
+    private String getColorString(Color color) {
+        return color.getRed() + ":" + color.getGreen() + ":" + color.getBlue();
     }
 }

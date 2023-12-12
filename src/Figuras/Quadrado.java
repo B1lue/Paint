@@ -6,14 +6,15 @@ import java.util.StringTokenizer;
 public class Quadrado extends Figura {
     protected Ponto p1;
     protected int lado;
-    protected int direcao;
     protected Color corDePreenchimento;
-    public Quadrado(int x, int y, int lado, int direcao, Color cor,Color corDePreenchimento) {
+    protected int direcao; //
+
+    public Quadrado(int x, int y, int lado,int direcao, Color cor, Color corDePreenchimento) {
         super(cor);
         this.corDePreenchimento = corDePreenchimento;
         this.p1 = new Ponto(x, y, cor);
         this.lado = lado;
-        this.direcao = direcao;
+        this.direcao = direcao;  // nao serve pra nda(por enquanto )
     }
 
     public Quadrado(String s) {
@@ -21,15 +22,20 @@ public class Quadrado extends Figura {
 
         quebrador.nextToken();
 
-        //int x1 = Integer.parseInt(quebrador.nextToken());
-        //int y1 = Integer.parseInt(quebrador.nextToken());
+        int x = Integer.parseInt(quebrador.nextToken());
+        int y = Integer.parseInt(quebrador.nextToken());
+        this.lado = Integer.parseInt(quebrador.nextToken());
 
-        // int lado = Integer.parseInt(quebrador.nextToken());
+        this.cor = getColorFromTokenizer(quebrador);
+        this.corDePreenchimento = getColorFromTokenizer(quebrador);
+        this.p1 = new Ponto(x, y, this.cor);
+    }
 
-        this.cor = new Color(Integer.parseInt(quebrador.nextToken()),  // R
-                Integer.parseInt(quebrador.nextToken()),  // G
-                Integer.parseInt(quebrador.nextToken()));
-
+    private Color getColorFromTokenizer(StringTokenizer quebrador) {
+        int r = Integer.parseInt(quebrador.nextToken());
+        int g = Integer.parseInt(quebrador.nextToken());
+        int b = Integer.parseInt(quebrador.nextToken());
+        return new Color(r, g, b);
     }
 
     public Ponto getP1() {
@@ -52,10 +58,12 @@ public class Quadrado extends Figura {
                 ":" +
                 this.lado +
                 ":" +
-                this.cor.getRed() +
+                getColorString(this.cor) +
                 ":" +
-                this.cor.getGreen() +
-                ":" +
-                this.cor.getBlue();
+                getColorString(this.corDePreenchimento);
+    }
+
+    private String getColorString(Color color) {
+        return color.getRed() + ":" + color.getGreen() + ":" + color.getBlue();
     }
 }

@@ -22,10 +22,21 @@ public class Retangulo extends Figura {
 
         quebrador.nextToken();
 
+        int x = Integer.parseInt(quebrador.nextToken());
+        int y = Integer.parseInt(quebrador.nextToken());
+        this.largura = Integer.parseInt(quebrador.nextToken());
+        this.altura = Integer.parseInt(quebrador.nextToken());
 
-        this.cor = new Color(Integer.parseInt(quebrador.nextToken()),  // R
-                Integer.parseInt(quebrador.nextToken()),  // G
-                Integer.parseInt(quebrador.nextToken())); // B
+        this.cor = getColorFromTokenizer(quebrador);
+        this.corDePreenchimento = getColorFromTokenizer(quebrador);
+        this.p1 = new Ponto(x, y, this.cor);
+    }
+
+    private Color getColorFromTokenizer(StringTokenizer quebrador) {
+        int r = Integer.parseInt(quebrador.nextToken());
+        int g = Integer.parseInt(quebrador.nextToken());
+        int b = Integer.parseInt(quebrador.nextToken());
+        return new Color(r, g, b);
     }
 
     public Ponto getP1() {
@@ -50,10 +61,12 @@ public class Retangulo extends Figura {
                 ":" +
                 this.altura +
                 ":" +
-                this.cor.getRed() +
+                getColorString(this.cor) +
                 ":" +
-                this.cor.getGreen() +
-                ":" +
-                this.cor.getBlue();
+                getColorString(this.corDePreenchimento);
+    }
+
+    private String getColorString(Color color) {
+        return color.getRed() + ":" + color.getGreen() + ":" + color.getBlue();
     }
 }

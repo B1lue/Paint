@@ -3,57 +3,49 @@ package Figuras;
 import java.awt.*;
 import java.util.StringTokenizer;
 
-
-public class Circulo extends Figura
-{
+public class Circulo extends Figura {
     protected Ponto centro;
     protected int raio;
-    protected Color corPreenchimento;
+    protected Color corDePreenchimento;
 
-    public Circulo(int x, int y, int r, Color cor, Color corPreenchimento) {
+    public Circulo(int x, int y, int raio, Color cor, Color corDePreenchimento) {
         super(cor);
-        this.corPreenchimento = corPreenchimento;
-        this.centro = new Ponto(x, y);
-        this.raio = r;
-
-        System.out.println(this.centro.getX() + this.centro.getY() + this.raio);
+        this.corDePreenchimento = corDePreenchimento;
+        this.centro = new Ponto(x, y, cor);
+        this.raio = raio;
     }
 
     public Circulo(String s) {
-        StringTokenizer quebrador = new StringTokenizer(s,":");
+        StringTokenizer quebrador = new StringTokenizer(s, ":");
 
         quebrador.nextToken();
 
-        int x = 0;
-        int y = 0;
-        int raio = 0;
+        int x = Integer.parseInt(quebrador.nextToken());
+        int y = Integer.parseInt(quebrador.nextToken());
+        this.raio = Integer.parseInt(quebrador.nextToken());
 
-        if (quebrador.hasMoreTokens()) {
-            x = Integer.parseInt(quebrador.nextToken());
-        }
+        this.cor = getColorFromTokenizer(quebrador);
+        this.corDePreenchimento = getColorFromTokenizer(quebrador);
+        this.centro = new Ponto(x, y, this.cor);
+    }
 
-        if (quebrador.hasMoreTokens()) {
-            y = Integer.parseInt(quebrador.nextToken());
-        }
-
-        if (quebrador.hasMoreTokens()) {
-            raio = Integer.parseInt(quebrador.nextToken());
-        }
-
-        this.centro = new Ponto(x, y, Color.BLACK);
-        this.raio = raio;
+    private Color getColorFromTokenizer(StringTokenizer quebrador) {
+        int r = Integer.parseInt(quebrador.nextToken());
+        int g = Integer.parseInt(quebrador.nextToken());
+        int b = Integer.parseInt(quebrador.nextToken());
+        return new Color(r, g, b);
     }
 
     public Ponto getCentro() {
         return this.centro;
     }
 
+    @Override
     public void torneSeVisivel(Graphics g) {
+        g.setColor(this.corDePreenchimento);
+        g.fillOval(this.centro.getX() - raio, this.centro.getY() - raio, 2 * raio, 2 * raio);
         g.setColor(this.cor);
         g.drawOval(this.centro.getX() - raio, this.centro.getY() - raio, 2 * raio, 2 * raio);
-        g.setColor(this.corPreenchimento);
-        g.fillOval(this.centro.getX() - raio, this.centro.getY() - raio, 2 * raio, 2 * raio);
-
     }
 
     public String toString() {
@@ -64,11 +56,12 @@ public class Circulo extends Figura
                 ":" +
                 this.raio +
                 ":" +
-                this.cor.getRed() +
+                getColorString(this.cor) +
                 ":" +
-                this.cor.getGreen() +
-                ":" +
-                this.cor.getBlue();
+                getColorString(this.corDePreenchimento);
     }
 
+    private String getColorString(Color color) {
+        return color.getRed() + ":" + color.getGreen() + ":" + color.getBlue();
+    }
 }
